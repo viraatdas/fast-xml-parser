@@ -284,6 +284,32 @@ describe("XMLParser", function () {
     expect(expected).toEqual(result);
   });
 
+  it("should strip xml declaration from default object output when configured", function () {
+    const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+      <note>
+        <to>Tove</to>
+        <from>Jani</from>
+        <heading>Reminder</heading>
+        <body>Don't forget me this weekend!</body>
+      </note>`;
+
+    const options = {
+      ignoreDeclaration: true,
+    };
+
+    const expected = {
+      note: {
+        to: "Tove",
+        from: "Jani",
+        heading: "Reminder",
+        body: "Don't forget me this weekend!"
+      }
+    };
+    const result = new XMLParser(options).parse(xmlData);
+
+    expect(result).toEqual(expected);
+  });
+
   it("should strip xml declarion tag", function () {
     const xmlData = `<?xml version="1.0"?>
       <?elementnames <fred>, <bert>, <harry> ?>
