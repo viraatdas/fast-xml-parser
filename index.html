@@ -67,6 +67,7 @@
                             <input type ="checkbox" id="alwaysCreateTextNode" > Always create a separate property for text value of a tag. <br>
                             <input type ="checkbox" id="trimValues" checked="true" > Trim<br>
                             <input type="checkbox" id="ignoreAttributes" checked="true"> Ignore attributes <br>
+                            <input type="checkbox" id="ignoreDeclaration" checked="true"> Ignore XML declaration <br>
                             <input type="checkbox" id="attributesGroupName"> Group all the attributes  <br>
                             <input type ="checkbox" id="allowBooleanAttributes"> Allow Boolean Attributes <br>
                             <input type="checkbox" id="parseAttributeValue"> Parse attribute's value to float / integer / boolean.<br>
@@ -170,7 +171,8 @@
                     editor.setValue('');
                     const builder = new fxp.XMLBuilder(xmlBuilderOptions());
                     const result = builder.build(JSON.parse( $('#result').val() ));
-                    editor.setValue('<?xml version="1.0"?>\n'+result);
+                    const declaration = hasXmlDeclaration(result) ? '' : '<?xml version="1.0"?>\n';
+                    editor.setValue(declaration + result);
                 }else{
                     console.error("Empty input");
                 }
@@ -207,6 +209,7 @@
                     parseNodeValue : $("#parseNodeValue").prop("checked"),
                     parseAttributeValue : $("#parseAttributeValue").prop("checked"),
                     allowBooleanAttributes: $("#allowBooleanAttributes").prop("checked"),
+                    ignoreDeclaration: $("#ignoreDeclaration").prop("checked"),
                     trimValues: $('#trimValues').prop("checked"), //Trim string values of tag and attributes
                     cdataTagName: $("#parseCDATA").prop("checked") ? "#cdata" : false,
                     preserveOrder: $("#preserveOrder").prop("checked"),
@@ -253,6 +256,10 @@
 
             function updateOutputLength(data){
                 $("#lengthoutput")[0].innerText = data.length;
+            }
+
+            function hasXmlDeclaration(xml) {
+                return /^<\?xml(?:\s|\?>)/.test(xml);
             }
 
             editor.setValue(`<?xml version="1.0"?>
